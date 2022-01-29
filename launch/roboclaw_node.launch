@@ -1,0 +1,3 @@
+<launch>
+    <node name="roboclaw_node" pkg="roboclaw_node" type="roboclaw_node" output="screen"/>
+</launch>

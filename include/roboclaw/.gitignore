@@ -1,0 +1,74 @@
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+build/.cmake/api/v1/query/client-vscode/query.json
+build/.cmake/api/v1/reply/cache-v2-aea425b1532d0f35e8c6.json
+build/.cmake/api/v1/reply/codemodel-v2-15f87932c25724f95642.json
+build/.cmake/api/v1/reply/index-2021-12-22T08-23-27-0660.json
+build/.cmake/api/v1/reply/target-roboclaw-Debug-856643df1546e7eff431.json
+build/.cmake/api/v1/reply/target-roboclaw-test-Debug-afa5e316403e560459de.json
+build/build.ninja
+build/cmake_install.cmake
+build/CMakeCache.txt
+build/CMakeFiles/3.19.0-rc1/CMakeCCompiler.cmake
+build/CMakeFiles/3.19.0-rc1/CMakeCXXCompiler.cmake
+build/CMakeFiles/3.19.0-rc1/CMakeDetermineCompilerABI_C.bin
+build/CMakeFiles/3.19.0-rc1/CMakeDetermineCompilerABI_CXX.bin
+build/CMakeFiles/3.19.0-rc1/CMakeRCCompiler.cmake
+build/CMakeFiles/3.19.0-rc1/CMakeSystem.cmake
+build/CMakeFiles/3.19.0-rc1/CompilerIdC/CMakeCCompilerId.c
+build/CMakeFiles/3.19.0-rc1/CompilerIdCXX/CMakeCXXCompilerId.cpp
+build/CMakeFiles/cmake.check_cache
+build/CMakeFiles/CMakeOutput.log
+build/CMakeFiles/rules.ninja
+build/CMakeFiles/TargetDirectories.txt
+build/compile_commands.json
