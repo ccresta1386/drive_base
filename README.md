@@ -37,10 +37,10 @@ The launch file can be configure at the command line with arguments, by changing
 |omnidirectional|false|whether or not to use the omnidirectional driving|
 
 ## Topics
-###Subscribed
+### Subscribed
 /cmd_vel [(geometry_msgs/msg/Twist.msg)](https://docs.ros2.org/foxy/api/geometry_msgs/msg/Twist.html)  
 Velocity commands for the mobile base.
-###Published
+### Published
 /wheel/odometry [(nav_msgs/msg/Odometry.msg)](https://docs.ros2.org/foxy/api/nav_msgs/msg/Odometry.html)  
 Odometry output from the mobile base. Note omnidirectional odometry is not currently implemented.
 
