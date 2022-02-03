@@ -17,7 +17,8 @@ class MecanumDrive : public rclcpp::Node
 {
     private:
     	size_t count_;
-    	rclcpp::TimerBase::SharedPtr timer_;
+    	rclcpp::TimerBase::SharedPtr timer_;    	
+    	rclcpp::TimerBase::SharedPtr timer2_;
     	rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_publisher_;
 		rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr twist_subscriber_;
         rclcpp::Time current_time;
@@ -44,8 +45,9 @@ class MecanumDrive : public rclcpp::Node
         MecanumDrive(nav_msgs::msg::Odometry odomStart) 
 		: Node("mecanum_drive"),
         count_(0),	
-		timer_(this->create_wall_timer(500ms, std::bind(&MecanumDrive::updateOdom, this))),
-		odom_publisher_(this->create_publisher<nav_msgs::msg::Odometry>("wheel/odometry", 90)),
+		timer_(this->create_wall_timer(10ms, std::bind(&MecanumDrive::updateOdom, this))),
+		timer2_(this->create_wall_timer(1000ms, std::bind(&MecanumDrive::respond, this))),
+		odom_publisher_(this->create_publisher<nav_msgs::msg::Odometry>("wheel/odometry", 60)),
 		twist_subscriber_(this->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", 60, std::bind(&MecanumDrive::callbackTwist, this, std::placeholders::_1))),
 		current_time(this->get_clock()->now()),
 		last_time(this->get_clock()->now()),
@@ -56,9 +58,6 @@ class MecanumDrive : public rclcpp::Node
         front_right(RoboclawNode("/dev/ttyACM0", 128, 115200, false)),
 		odomNew(odomStart),
 		odomOld(odomStart),
-		WHEEL_RADIUS(rad),
-        WHEELBASE_X(base_x),
-        WHEELBASE_Y(base_y),
         // Set encoder counts to the accumulators for zeroing reasons
         br_p(back_right.getEncoder()),
         fr_p(front_right.getEncoder()), 
@@ -67,34 +66,42 @@ class MecanumDrive : public rclcpp::Node
         {
             // Make ROS Params available to set
 			this->declare_parameter<int>("encoder_scale", -2560);
-            this->declare_parameter<bool>("debug", false);
-            this->declare_parameter<double>("wheel_radius", 0.09915f);
-            this->declare_parameter<double>("wheelbase_x", 0.16312f);
-            this->declare_parameter<double>("wheelbase_y", 0.3458f);
+            this->declare_parameter<bool>("debug", true);
+            this->declare_parameter<double>("wheel_radius", 0.09915);
+            this->declare_parameter<double>("wheelbase_x", 0.16312);
+            this->declare_parameter<double>("wheelbase_y", 0.3458);
             this->declare_parameter<bool>("omnidirectional", false);
-            ticks_to_m = encoder_scale*2.0*M_PI*WHEEL_RADIUS;
+            respond();
         };
 
         void callbackTwist(const geometry_msgs::msg::Twist::SharedPtr msg);
         void updateOdom();
-        
+        void odomDifferential();
+        void odomOmni();
+        void respond();
 };
 
 void MecanumDrive::respond()
 {
     // Set ROS params
-    this->get_parameter("encoder_scale", -2560);
-    this->get_parameter("wheel_radius", rad);
+    this->get_parameter("encoder_scale", encoder_scale);
+    this->get_parameter("wheel_radius", WHEEL_RADIUS);
     this->get_parameter("wheelbase_x", WHEELBASE_X);
     this->get_parameter("wheelbase_y", WHEELBASE_Y);
-    this->get_parameter("wheelbase_y", debug);
+    this->get_parameter("debug", debug);
     this->get_parameter("omnidirectional", omnidirectional);
+    ticks_to_m = encoder_scale*2.0*M_PI*WHEEL_RADIUS;
+
 }
 
 void MecanumDrive::callbackTwist(const geometry_msgs::msg::Twist::SharedPtr msg){
     // Convert msg to double
     x = (double)msg->linear.x;
-    y = (double)msg->linear.y;
+    y = 0.0;
+    if(omnidirectional)
+    {
+        y = (double)msg->linear.y;
+    }
     theta = (double)msg->angular.z;
     
     // Convert x/y/tht speeds to wheel velocities
@@ -136,7 +143,8 @@ void MecanumDrive::odomDifferential()
     br_p += br;
     fl_p += fl;
     fr_p += fr;
-    
+    x_acc = odomNew.pose.pose.position.x;
+	y_acc = odomNew.pose.pose.position.y;
     current_time = this->get_clock()->now();
     double dt = (current_time - last_time).seconds(); 
 
@@ -254,6 +262,28 @@ int main(int argc, char **argv){
     odomStart.pose.pose.orientation.x = 0;
     odomStart.pose.pose.orientation.y = 0;
     odomStart.pose.pose.orientation.w = 0;
+    for(int i = 0; i<36; i++) {
+    if(i == 0 || i == 7 || i == 14) {
+      odomStart.pose.covariance[i] = .01;
+     }
+     else if (i == 21 || i == 28 || i== 35) {
+       odomStart.pose.covariance[i] += 0.1;
+     }
+     else {
+       odomStart.pose.covariance[i] = 0;
+     }
+  	}
+  	for(int i = 0; i<36; i++) {
+    if(i == 0 || i == 7 || i == 14) {
+      odomStart.twist.covariance[i] = .01;
+     }
+     else if (i == 21 || i == 28 || i== 35) {
+       odomStart.twist.covariance[i] += 0.1;
+     }
+     else {
+       odomStart.twist.covariance[i] = 0;
+     }
+  	}
     odomStart.twist.twist.linear.x = 0;
     odomStart.twist.twist.linear.y = 0;
     odomStart.twist.twist.linear.z = 0;

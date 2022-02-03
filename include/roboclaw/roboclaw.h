@@ -91,6 +91,8 @@ int roboclaw_close(struct roboclaw *rc);
 
 int roboclaw_duty_m1m2(struct roboclaw *rc, uint8_t address, int16_t duty_m1, int16_t duty_m2);
 int roboclaw_speed_m1m2(struct roboclaw *rc,uint8_t address, int speed_m1, int speed_m2);
+int roboclaw_speed_m1(struct roboclaw *rc, uint8_t address, int speed_m1);
+int roboclaw_speed_m2(struct roboclaw *rc,uint8_t address, int speed_m2);
 int roboclaw_speed_accel_m1m2(struct roboclaw *rc,uint8_t address, int speed_m1, int speed_m2, int accel);
 int roboclaw_main_battery_voltage(struct roboclaw *rc,uint8_t address, int16_t *voltage);
 int roboclaw_encoders(struct roboclaw *rc, uint8_t address, int32_t *enc_m1, int32_t *enc_m2);

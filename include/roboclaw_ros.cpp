@@ -4,7 +4,7 @@
 
 using namespace std;
 
-explicit RoboclawNode::RoboclawNode(string devname, int addr, int baudrate, bool m1)
+RoboclawNode::RoboclawNode(string devname, int addr, int baudrate, bool m1)
 {
     this->baudrate=baudrate;
     this->address = addr;
