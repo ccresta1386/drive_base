@@ -7,8 +7,11 @@ Before you use this package you need to calibrate the velocity PID on the Robocl
 installation of their calibration software [Motion Studio](https://downloads.basicmicro.com/software/BMStudio/setup.exe) (Windows only).
 
 Settings this project uses that need to be set in motion studio:
+
 Control Mode: packet serial
+
 Serial Packet Address: Right: 128, Left: 129
+
 Baudrate: 115200
 
 Additionally check that your encoders readings and motor directions line up in the software.
